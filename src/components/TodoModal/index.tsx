@@ -28,7 +28,7 @@ export const TodoModal = ({ open, onClose, onAdd }: Props) => {
 
 	const validate = (value: string) => {
 		if (!value) {
-      inputRef.current!.focus();
+			inputRef.current!.focus();
 			return setText({
 				value,
 				error: true,
@@ -79,12 +79,15 @@ export const TodoModal = ({ open, onClose, onAdd }: Props) => {
 							placeholder="Aprender, estudiar, hacer, ..."
 							value={text.value}
 							onChange={(e) => setText({ value: e.target.value, error: false })}
-              title="Agrega una tarea"
+							title="Agrega una tarea"
 						/>
 					</label>
-					<Checkbox checked={completed} onChange={() => setCompleted(!completed)}>
-						{text.value || "Todo"}
-					</Checkbox>
+					<label className={styles.modal__form_checkbox}>
+						Completada:
+						<Checkbox checked={completed} onChange={() => setCompleted(!completed)}>
+							{text.value || "Todo"}
+						</Checkbox>
+					</label>
 					<div className={styles.modal__form_buttons}>
 						<button type="button" onClick={() => onClose()}>
 							Cancel
