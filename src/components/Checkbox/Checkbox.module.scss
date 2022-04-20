@@ -1,0 +1,105 @@
+@use "styles/variables.scss";
+
+$checkbox-gradient: linear-gradient(135deg, var(--primary-color) 13%, var(--secondary-color) 66%);
+
+.checkbox {
+  cursor: pointer;
+  padding: 2rem;
+  position: relative;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  input:checked ~ &_checkmark {
+    background: $checkbox-gradient;
+    border: none;
+  }
+
+  input:checked ~ &_checkmark::after {
+    display: block;
+  }
+
+  &_checkmark {
+    background: none;
+    border: thin solid var(--secondary-text);
+    border-radius: 50%;
+    cursor: pointer;
+    height: 2rem;
+    left: 2rem;
+    position: absolute;
+    transform: translateY(-50%);
+    top: 50%;
+    width: 2rem;
+
+    &::after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 0.8rem;
+      top: 0.4rem;
+      width: 0.4rem;
+      height: 0.8rem;
+      border: solid var(--primary-text);
+      border-width: 0 2px 2px 0;
+      transform: rotate(50deg);
+    }
+  }
+
+  p {
+    color: var(--primary-text);
+    font-size: variables.$fz-sm;
+    font-weight: 500;
+    margin-left: 3rem;
+    position: relative;
+    width: fit-content;
+    word-break: break-word;
+  }
+
+  input ~ p::before {
+    background-color: var(--primary-text);
+    content: "";
+    height: 2px;
+    left: 0px;
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform-origin: right center;
+    transform: scaleX(0);
+    transition: transform 0.5s ease 0s;
+  }
+
+  input:checked ~ p::before {
+    transform-origin: left bottom;
+    transform: scaleX(1);
+  }
+
+  &:hover,
+  &:focus,
+  &:focus-within {
+    outline: none;
+
+    input:not(:checked) ~ &_checkmark {
+      border-color: transparent;
+      background-image: linear-gradient(var(--secondary-bg), var(--secondary-bg)),
+        $checkbox-gradient;
+      background-origin: border-box;
+      background-clip: content-box, border-box;
+    }
+
+    p {
+      color: var(--secondary-text);
+      font-size: variables.$fz-sm;
+      font-weight: 500;
+      margin-left: 3rem;
+
+      &::before {
+        background-color: var(--secondary-text);
+      }
+    }
+  }
+}

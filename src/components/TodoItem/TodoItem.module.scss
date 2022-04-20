@@ -1,0 +1,39 @@
+@use "styles/variables.scss";
+
+.item {
+	align-items: center;
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: 1fr auto;
+	width: 100%;
+
+	&.current {
+		opacity: 0.3;
+	}
+
+	&:not(:last-child) {
+		border-bottom: 1px solid var(--stroke-color);
+	}
+
+	&__delete {
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 0 2rem 0 0;
+
+		svg {
+			fill: var(--primary-text);
+			height: 1.8rem;
+			transition: fill 0.2s ease-in-out;
+		}
+
+		&:hover,
+		&:focus {
+			outline: none;
+
+			svg {
+				fill: var(--error-color);
+			}
+		}
+	}
+}

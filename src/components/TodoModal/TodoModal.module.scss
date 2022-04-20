@@ -1,0 +1,154 @@
+@use "styles/variables.scss";
+
+.overlay {
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.5);
+	border: none;
+	display: flex;
+	height: 100vh;
+	left: 0;
+	opacity: 0;
+	padding: 0 2rem;
+	pointer-events: none;
+	position: fixed;
+	transition: all 0.3s ease-in-out;
+	top: 0;
+	width: 100vw;
+	will-change: opacity, pointer-events;
+	z-index: 1;
+
+	&.visible {
+		opacity: 1;
+		pointer-events: all;
+	}
+}
+
+.modal {
+	background: var(--primary-bg);
+	border-radius: 1rem;
+	box-shadow: var(--box-shadow);
+	left: 50%;
+	height: 25rem;
+	margin: 0 auto;
+	max-width: 50rem;
+	min-height: 20rem;
+	opacity: 0;
+	position: absolute;
+	transform: translate(-50%, -100%) scale(0);
+	transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+	top: 50%;
+	visibility: hidden;
+	width: 90%;
+	will-change: transform, opacity, visibility;
+	z-index: 1;
+
+	&.open {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+		visibility: visible;
+	}
+
+	.modal__form {
+		justify-content: space-between;
+		display: flex;
+		flex-flow: column nowrap;
+		height: 100%;
+		padding: 5rem 2rem 2rem;
+
+		&_label {
+			align-items: center;
+			color: var(--secondary-text);
+			display: flex;
+			font-size: variables.$fz-sm;
+			margin-bottom: 1rem;
+			width: 100%;
+
+			input {
+				background: none;
+				border: none;
+				border-bottom: 1px solid var(--secondary-text);
+				color: var(--secondary-text);
+				flex: 1;
+				margin-left: 1rem;
+				padding: 0.5rem 1rem;
+				outline: none;
+
+				&:focus {
+					border-bottom: 1px solid var(--primary-color);
+				}
+			}
+			
+			&.error {
+				color: red;
+
+				input {
+					border-color: red;
+				}
+			}
+		}
+
+		& > label {
+			margin-bottom: 1rem;
+			padding: 0;
+
+			button {
+				left: 0;
+			}
+		}
+
+		&_buttons {
+			display: flex;
+			flex-flow: row nowrap;
+			gap: 1rem;
+			justify-content: center;
+			margin-top: auto;
+
+			button {
+				background-color: var(--secondary-bg);
+				border: none;
+				border-radius: 0.5rem;
+				color: var(--secondary-text);
+				cursor: pointer;
+				font-size: variables.$fz-sm;
+				padding: 0.5rem 1rem;
+				transition: all 0.3s ease-in-out;
+
+				&:hover,
+				&:focus {
+					background-color: var(--primary-color);
+					color: var(--primary-text);
+					transform: scale(1.05);
+				}
+
+				&:active {
+					transform: scale(0.95);
+				}
+			}
+		}
+	}
+
+	.close {
+		background: none;
+		border: none;
+		border-radius: 50%;
+		cursor: pointer;
+		margin: 1rem 1rem 0 0;
+		outline: none;
+		padding: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+
+		&:hover svg,
+		&:active svg,
+		&:focus svg {
+			fill: var(--error-color);
+			transition: fill 0.1s ease-in-out;
+		}
+
+		svg {
+			fill: var(--primary-text);
+			transition: fill 0.2s ease-in-out;
+		}
+	}
+}

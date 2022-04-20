@@ -1,0 +1,67 @@
+@import "./variables.scss";
+
+.theme-light {
+	--primary-color: #{$primary-light-color};
+	--primary-bg: #{$primary-light-bg};
+	--primary-text: #{$primary-light-text};
+	--secondary-color: #{$secondary-light-color};
+	--secondary-bg: #{$secondary-light-bg};
+	--secondary-text: #{$secondary-light-text};
+	--stroke-color: #{$stroke-color-light};
+	--box-shadow: #{$box-shadow-light};
+	--error-color: #{$error-color-light};
+}
+
+.theme-dark {
+	--primary-color: #{$primary-dark-color};
+	--primary-bg: #{$primary-dark-bg};
+	--primary-text: #{$primary-dark-text};
+	--secondary-color: #{$secondary-dark-color};
+	--secondary-bg: #{$secondary-dark-bg};
+	--secondary-text: #{$secondary-dark-text};
+	--stroke-color: #{$stroke-color-dark};
+	--box-shadow: #{$box-shadow-dark};
+	--error-color: #{$error-color-dark};
+}
+
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+
+html {
+	font: 62.5% $font;
+	overflow-x: hidden;
+	user-select: none;
+}
+
+main {
+	background-color: var(--primary-bg);
+	color: var(--secondary-text);
+	min-height: 100vh;
+}
+
+main > div {
+	display: flex;
+	flex-flow: column nowrap;
+	margin: 0 auto;
+	max-width: 60rem;
+	padding: 0 2rem;
+	width: 100%;
+}
+
+:focus-visible {
+	outline: 2px dashed var(--primary-color);
+	outline-offset: 3px;
+}
+
+:focus:not(:focus-visible) {
+	outline: none;
+	outline-offset: 0px;
+}
+
+:focus {
+	outline: 2px dashed var(--primary-color);
+	outline-offset: 3px;
+}

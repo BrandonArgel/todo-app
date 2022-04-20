@@ -1,0 +1,42 @@
+@use "styles/variables.scss";
+
+.search {
+	align-items: center;
+	background-color: var(--secondary-bg);
+	border-radius: 2rem;
+  box-shadow: var(--box-shadow);
+	color: var(--secondary-text);
+	display: flex;
+	height: 3.5rem;
+	width: 100%;
+
+	&__input {
+		background-color: transparent;
+		border: none;
+		color: var(--secondary-text);
+		flex: 1;
+		font-size: 1.2rem;
+		padding: 1rem 1rem 1rem 2rem;
+		width: 100%;
+
+		&:focus {
+			outline: none;
+		}
+	}
+
+	&__label {
+		padding: 0.5rem 1.5rem 0.5rem 0;
+
+		svg {
+			fill: var(--secondary-text);
+			height: 2rem;
+			transition: fill 0.2s ease-in-out;
+			width: 2rem;
+			
+
+			&:hover {
+				fill: var(--primary-text);
+			}
+		}
+	}
+}

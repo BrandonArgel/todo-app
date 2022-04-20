@@ -1,0 +1,21 @@
+@use "styles/variables.scss";
+
+.add {
+	background: none;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	height: 3.5rem;
+	width: 3.5rem;
+
+	svg {
+		fill: var(--secondary-text);
+    height: 100%;
+		transition: fill 0.2s ease-in-out;
+    width: 100%;
+
+		&:hover {
+			fill: var(--primary-color);
+		}
+	}
+}

@@ -1,0 +1,107 @@
+@use "styles/variables.scss";
+
+.header {
+	color: var(--primary-text);
+	margin: 2rem 0;
+
+	&__container {
+		display: grid;
+		grid-template-areas:
+			"title button"
+			"progress progress";
+		grid-template-columns: 1fr auto;
+		align-items: center;
+		width: 100%;
+	}
+
+	&__title {
+		font-size: 3rem;
+		grid-area: title;
+		text-transform: uppercase;
+
+		span {
+			color: var(--primary-color);
+		}
+	}
+
+	&__button {
+		background: none;
+		border: none;
+		cursor: pointer;
+		grid-area: button;
+
+		&.dark svg {
+			fill: orange;
+		}
+
+		&.light svg {
+			fill: var(--primary-color);
+		}
+	}
+
+	&__progress {
+		grid-area: progress;
+		margin-top: 1rem;
+		position: relative;
+
+		&_bar {
+			background-color: var(--secondary-bg);
+			border: none;
+			border-radius: 0.5rem;
+			display: flex;
+			height: 1.2rem;
+			line-height: 5px;
+			bottom: 0;
+			left: 0;
+			vertical-align: 10px;
+			width: 100%;
+			z-index: 1;
+
+			&[value]::-webkit-progress-bar {
+				background-color: transparent;
+			}
+
+			&::-webkit-progress-value {
+				background-image: linear-gradient(
+					to right,
+					var(--primary-color) 0%,
+					var(--secondary-color) 100%
+				);
+				border-radius: 0.5rem;
+				transition: width 0.3s ease-in-out;
+				will-change: width;
+			}
+
+			&::-moz-progress-bar {
+				background-image: linear-gradient(
+					to right,
+					var(--primary-color) 0%,
+					var(--secondary-color) 100%
+				);
+				border-radius: 0.5rem;
+				transition: width 0.3s ease-in-out;
+				will-change: width;
+			}
+
+			&::-webkit-progress-bar {
+				border-radius: 0.5rem;
+			}
+
+			&::-webkit-progress-value {
+				border-radius: 0.5rem;
+			}
+		}
+
+		&_percentage {
+			color: var(--secondary-text);
+			font-size: variables.$fz-xxs;
+			font-weight: bold;
+			left: 50%;
+			line-height: variables.$fz-xxs;
+			position: absolute;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			filter: contrast(5);
+		}
+	}
+}

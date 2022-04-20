@@ -1,0 +1,24 @@
+@use "styles/variables.scss";
+
+.list {
+  align-items: center;
+  background-color: var(--secondary-bg);
+  border-radius: 1rem;
+  box-shadow: var(--box-shadow);
+  display: flex;
+  flex-flow: column nowrap;
+  list-style: none;
+  overflow: hidden;
+
+  &__item {
+    align-items: center;
+    color: var(--secondary-text);
+    display: flex;
+    font-size: variables.$fz-sm;
+    padding: 2rem 0;
+
+    & > button:first-child {
+      height: 2rem;
+    }
+  }
+}
