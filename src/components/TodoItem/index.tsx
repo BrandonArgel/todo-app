@@ -37,10 +37,22 @@ export const TodoItem: React.FC<Props> = ({
 			<Checkbox checked={completed} onChange={() => onComplete(id)}>
 				{text}
 			</Checkbox>
-			<button className={styles.item__edit} type="button" onClick={() => onEdit(id)}>
+			<button
+				className={styles.item__edit}
+				type="button"
+				onClick={() => onEdit(id)}
+				aria-hidden={dragging ? "false" : "true"}
+				title={`Editar tarea: ${text}`}
+			>
 				<Edit />
 			</button>
-			<button className={styles.item__delete} type="button" onClick={() => onDelete(id)}>
+			<button
+				className={styles.item__delete}
+				type="button"
+				onClick={() => onDelete(id)}
+				aria-hidden={dragging ? "false" : "true"}
+				title={`Eliminar tarea: ${text}`}
+			>
 				<Delete />
 			</button>
 		</li>

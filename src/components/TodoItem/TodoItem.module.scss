@@ -21,7 +21,7 @@
 		visibility: hidden;
 	}
 
-	&:hover button[type="button"] {
+	&:hover button[type="button"], &:focus-within button[type="button"] {
 		opacity: 1;
 		visibility: visible;
 	}
