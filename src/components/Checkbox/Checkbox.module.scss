@@ -3,14 +3,13 @@
 $checkbox-gradient: linear-gradient(135deg, var(--primary-color) 13%, var(--secondary-color) 66%);
 
 .checkbox {
-  cursor: pointer;
+  cursor: inherit;
   padding: 2rem;
   position: relative;
 
   input {
     position: absolute;
     opacity: 0;
-    cursor: pointer;
     height: 0;
     width: 0;
   }

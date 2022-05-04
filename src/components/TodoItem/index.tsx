@@ -1,5 +1,5 @@
 import { Checkbox } from "components";
-import { Delete } from "assets/icons";
+import { Delete, Edit } from "assets/icons";
 import styles from "./TodoItem.module.scss";
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 	text: string;
 	onComplete: (id: string) => void;
 	onDelete: (id: string) => void;
+	onEdit: (id: string) => void;
 }
 
 export const TodoItem: React.FC<Props> = ({
@@ -24,6 +25,7 @@ export const TodoItem: React.FC<Props> = ({
 	onDragEnter,
 	onComplete,
 	onDelete,
+	onEdit,
 }) => {
 	return (
 		<li
@@ -35,6 +37,9 @@ export const TodoItem: React.FC<Props> = ({
 			<Checkbox checked={completed} onChange={() => onComplete(id)}>
 				{text}
 			</Checkbox>
+			<button className={styles.item__edit} type="button" onClick={() => onEdit(id)}>
+				<Edit />
+			</button>
 			<button className={styles.item__delete} type="button" onClick={() => onDelete(id)}>
 				<Delete />
 			</button>

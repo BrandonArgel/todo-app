@@ -6,33 +6,41 @@ import styles from "./TodoModal.module.scss";
 
 interface Props {
 	open: boolean;
+	edit?: boolean;
+	todo?: Todo | null;
 	onClose: () => void;
-	onAdd: (todo: Todo) => void;
+	onAdd?: (todo: Todo) => void;
+	onEdit?: (todo: Todo) => void;
 }
 
-export const TodoModal = ({ open, onClose, onAdd }: Props) => {
+export const TodoModal = ({ open, onClose, onAdd, onEdit, edit = false, todo }: Props) => {
+	const status = edit ? "Editar" : "Agregar";
 	const inputRef = React.useRef<HTMLInputElement>(null);
-	const [text, setText] = React.useState({
-		value: "",
-		error: false,
-	});
-	const [completed, setCompleted] = React.useState(false);
+	const [text, setText] = React.useState(todo?.text || "");
+	const [error, setError] = React.useState(todo?.text || false);
+	const [completed, setCompleted] = React.useState(todo?.completed || false);
 
 	React.useEffect(() => {
 		setTimeout(() => {
 			if (inputRef.current) {
 				inputRef.current.focus();
 			}
-		}, 0);
+		}, 100);
 	}, [open]);
+
+	React.useEffect(() => {
+		if (todo) {
+			setText(todo.text);
+			setCompleted(todo.completed);
+		}
+	}, [todo]);
 
 	const validate = (value: string) => {
 		if (!value) {
 			inputRef.current!.focus();
-			return setText({
-				value,
-				error: true,
-			});
+			setText(value);
+			setError(true);
+			return false;
 		}
 
 		return true;
@@ -40,17 +48,33 @@ export const TodoModal = ({ open, onClose, onAdd }: Props) => {
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (validate(text.value)) {
-			const todo = {
+		if (!edit) onCreate(e);
+		else onEditSubmit(e);
+	};
+
+	const onCreate = (e: React.FormEvent<HTMLFormElement>) => {
+		if (validate(text)) {
+			const newTodo = {
 				id: new Date().getTime().toString(),
-				text: text.value,
+				text,
 				completed,
 			};
-			onAdd(todo);
-			setText({
-				value: "",
-				error: false,
-			});
+			if (onAdd) onAdd(newTodo as Todo);
+			setText("");
+			setCompleted(false);
+			onClose();
+		}
+	};
+
+	const onEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		if (validate(text)) {
+			const editedTodo = {
+				...todo,
+				text,
+				completed,
+			};
+			if (onEdit) onEdit(editedTodo as Todo);
+			setText("");
 			setCompleted(false);
 			onClose();
 		}
@@ -71,28 +95,31 @@ export const TodoModal = ({ open, onClose, onAdd }: Props) => {
 				tabIndex={0}
 			>
 				<form className={styles.modal__form} onSubmit={onSubmit}>
-					<label className={`${styles.modal__form_label} ${text.error ? styles.error : ""}`}>
-						Agregar una tarea:
+					<label className={`${styles.modal__form_label} ${error ? styles.error : ""}`}>
+						{status} {edit ? "la" : "una"} tarea
 						<input
 							ref={inputRef}
 							type="text"
 							placeholder="Aprender, estudiar, hacer, ..."
-							value={text.value}
-							onChange={(e) => setText({ value: e.target.value, error: false })}
-							title="Agrega una tarea"
+							value={text}
+							onChange={(e) => {
+								setText(e.target.value);
+								setError(false);
+							}}
+							title={`${status} ${edit ? "la" : "una"} tarea`}
 						/>
 					</label>
 					<label className={styles.modal__form_checkbox}>
 						Completada:
-						<Checkbox checked={completed} onChange={() => setCompleted(!completed)}>
-							{text.value || "Todo"}
+						<Checkbox checked={completed as boolean} onChange={() => setCompleted(!completed)}>
+							{text || "Todo"}
 						</Checkbox>
 					</label>
 					<div className={styles.modal__form_buttons}>
 						<button type="button" onClick={() => onClose()}>
 							Cancel
 						</button>
-						<button type="submit">Agregar</button>
+						<button type="submit">{status}</button>
 					</div>
 				</form>
 				<button

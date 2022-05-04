@@ -13,9 +13,9 @@ export const Checkbox: React.FC<Props> = ({ checked, children, onChange }) => {
 			<input type="checkbox" checked={checked} tabIndex={-1} onChange={onChange} />
 			<button
 				className={styles.checkbox_checkmark}
-				type="button"
 				onClick={onChange}
 				title="Marcar como completada"
+				type="button"
 			/>
 			<p>{children}</p>
 		</label>
