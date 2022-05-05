@@ -13,6 +13,7 @@
     height: 100%;
 		transition: fill 0.2s ease-in-out;
     width: 100%;
+		will-change: fill;
 
 		&:hover {
 			fill: var(--primary-color);
