@@ -24,7 +24,7 @@ type ToDoAction = {
 
 const initialState: ToDoState = {
 	todos: [],
-	theme: "light",
+	theme: "dark",
 };
 
 const ToDoMethods = {
