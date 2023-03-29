@@ -1,11 +1,11 @@
 import * as React from "react";
-import { TodoModal } from "components";
-import { Add } from "assets/icons";
-import { Todo } from "utils/TodoType";
+import { TodoModal } from "@components";
+import { Add } from "@assets/icons";
+import { TodoModel } from "@models";
 import styles from "./TodoAdd.module.scss";
 
 interface Props {
-	onAdd: (todo: Todo) => void;
+	onAdd: (todo: TodoModel) => void;
 }
 
 export const TodoAdd: React.FC<Props> = ({ onAdd }) => {

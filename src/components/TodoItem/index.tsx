@@ -1,14 +1,15 @@
-import { Checkbox } from "components";
-import { Delete, Edit } from "assets/icons";
+import { useEffect } from "react";
+import { Checkbox } from "@components";
+import { Delete, Edit } from "@assets/icons";
 import styles from "./TodoItem.module.scss";
 
 interface Props {
 	completed: boolean;
-	draggable: boolean;
 	dragging: boolean;
 	id: string;
 	onDragStart: (e: React.DragEvent<HTMLLIElement>, id: string) => void;
-	onDragEnter?: (e: React.DragEvent<HTMLLIElement>) => void;
+	onDragEnter: (e: React.DragEvent<HTMLLIElement>, id: string) => void;
+	onDragEnd: () => void;
 	text: string;
 	onComplete: (id: string) => void;
 	onDelete: (id: string) => void;
@@ -19,10 +20,10 @@ export const TodoItem: React.FC<Props> = ({
 	completed,
 	id,
 	text,
-	draggable,
-	dragging,
 	onDragStart,
 	onDragEnter,
+	onDragEnd,
+	dragging,
 	onComplete,
 	onDelete,
 	onEdit,
@@ -30,9 +31,11 @@ export const TodoItem: React.FC<Props> = ({
 	return (
 		<li
 			className={dragging ? `${styles.item} ${styles.current}` : styles.item}
-			draggable={draggable}
+			onDragEnter={onDragEnter ? (e) => onDragEnter(e, id) : undefined}
+			onDragEnd={onDragEnd}
+			onDragOver={(e) => e.preventDefault()}
 			onDragStart={(e) => onDragStart(e, id)}
-			onDragEnter={onDragEnter}
+			draggable
 		>
 			<Checkbox checked={completed} onChange={() => onComplete(id)}>
 				{text}

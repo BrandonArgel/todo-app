@@ -9,7 +9,7 @@ interface Props {
 
 export const Checkbox: React.FC<Props> = ({ checked, children, onChange }) => {
 	return (
-		<label className={styles.checkbox}>
+		<div className={styles.checkbox}>
 			<input type="checkbox" checked={checked} tabIndex={-1} onChange={onChange} />
 			<button
 				className={styles.checkbox_checkmark}
@@ -18,6 +18,6 @@ export const Checkbox: React.FC<Props> = ({ checked, children, onChange }) => {
 				type="button"
 			/>
 			<p>{children}</p>
-		</label>
+		</div>
 	);
 };

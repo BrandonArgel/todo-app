@@ -1,10 +1,10 @@
-import { TodoAdd, TodoSearch } from "components";
-import { Todo } from "utils/TodoType";
+import { TodoAdd, TodoSearch } from "@components";
+import { TodoModel } from "@models";
 import styles from "./TodoMiddle.module.scss";
 
 interface Props {
 	placeholder: string;
-  onAdd: (todo: Todo) => void;
+	onAdd: (todo: TodoModel) => void;
 	onSearch: (term: string) => void;
 	value: string;
 }

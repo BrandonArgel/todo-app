@@ -1,16 +1,16 @@
 import * as React from "react";
-import { Checkbox } from "components";
-import { Close } from "assets/icons";
-import { Todo } from "utils/TodoType";
+import { Checkbox } from "@components";
+import { Close } from "@assets/icons";
+import { TodoModel } from "@models";
 import styles from "./TodoModal.module.scss";
 
 interface Props {
 	open: boolean;
 	edit?: boolean;
-	todo?: Todo | null;
+	todo?: TodoModel | null;
 	onClose: () => void;
-	onAdd?: (todo: Todo) => void;
-	onEdit?: (todo: Todo) => void;
+	onAdd?: (todo: TodoModel) => void;
+	onEdit?: (todo: TodoModel) => void;
 }
 
 export const TodoModal = ({ open, onClose, onAdd, onEdit, edit = false, todo }: Props) => {
@@ -59,7 +59,7 @@ export const TodoModal = ({ open, onClose, onAdd, onEdit, edit = false, todo }: 
 				text,
 				completed,
 			};
-			if (onAdd) onAdd(newTodo as Todo);
+			if (onAdd) onAdd(newTodo as TodoModel);
 			setText("");
 			setCompleted(false);
 			onClose();
@@ -73,7 +73,7 @@ export const TodoModal = ({ open, onClose, onAdd, onEdit, edit = false, todo }: 
 				text,
 				completed,
 			};
-			if (onEdit) onEdit(editedTodo as Todo);
+			if (onEdit) onEdit(editedTodo as TodoModel);
 			setText("");
 			setCompleted(false);
 			onClose();

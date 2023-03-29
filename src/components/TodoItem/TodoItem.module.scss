@@ -1,8 +1,8 @@
-@use "styles/variables.scss";
+@use "@styles/variables.scss";
 
 .item {
 	align-items: center;
-	cursor: inherit;
+	cursor: inherit !important;
 	display: grid;
 	gap: 1rem;
 	grid-template-columns: 1fr auto auto;

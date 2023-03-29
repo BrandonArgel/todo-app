@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Search } from "assets/icons";
+import { Search } from "@assets/icons";
 import styles from "./TodoSearch.module.scss";
 
 interface Props {

@@ -1,4 +1,4 @@
-import { Sun, Moon } from "assets/icons";
+import { Sun, Moon } from "@assets/icons";
 import styles from "./TodoHeader.module.scss";
 
 interface Props {
