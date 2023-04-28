@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTodo } from "@context";
 import { Checkbox } from "@components";
 import { Delete, Edit, Grabber } from "@assets/icons";
@@ -8,12 +8,11 @@ interface Props {
 	completed: boolean;
 	dragging: boolean;
 	id: string;
-	onDragStart: (e: React.DragEvent<HTMLLIElement>, id: string) => void;
+	onDragStart: (node: HTMLLIElement, id: string) => void;
 	onDragEnter: (e: React.DragEvent<HTMLLIElement>, id: string) => void;
 	onDragEnd: () => void;
 	text: string;
 	onComplete: (id: string) => void;
-	onDelete: (id: string) => void;
 	onEdit: (id: string) => void;
 }
 
@@ -26,19 +25,20 @@ export const TodoItem: React.FC<Props> = ({
 	onDragEnd,
 	dragging,
 	onComplete,
-	onDelete,
 	onEdit,
 }) => {
+	const itemRef = useRef<HTMLLIElement>(null);
 	const { setTodoIdDelete } = useTodo();
 	const [draggable, setDraggable] = useState(false);
 
 	return (
 		<li
+			ref={itemRef}
 			className={dragging ? `${styles.item} ${styles.current}` : styles.item}
 			onDragEnter={onDragEnter ? (e) => onDragEnter(e, id) : undefined}
 			onDragEnd={onDragEnd}
 			onDragOver={(e) => e.preventDefault()}
-			onDragStart={(e) => onDragStart(e, id)}
+			onDragStart={(e) => onDragStart(itemRef.current!, id)}
 			draggable={draggable}
 		>
 			<Checkbox checked={completed} onChange={() => onComplete(id)}>
@@ -48,7 +48,6 @@ export const TodoItem: React.FC<Props> = ({
 				className={styles.item__edit}
 				type="button"
 				onClick={() => onEdit(id)}
-				aria-hidden={dragging ? "false" : "true"}
 				title={`Editar tarea: ${text}`}
 			>
 				<Edit />
@@ -57,7 +56,6 @@ export const TodoItem: React.FC<Props> = ({
 				className={styles.item__delete}
 				type="button"
 				onClick={() => setTodoIdDelete(id)}
-				aria-hidden={dragging ? "false" : "true"}
 				title={`Eliminar tarea: ${text}`}
 			>
 				<Delete />
@@ -67,7 +65,7 @@ export const TodoItem: React.FC<Props> = ({
 				aria-hidden={dragging ? "false" : "true"}
 				title="Drag to reorder"
 				onMouseDown={() => setDraggable(true)}
-				onMouseLeave={() => setDraggable(false)}
+				onMouseUp={() => setDraggable(false)}
 				onTouchStart={() => setDraggable(true)}
 				onTouchEnd={() => setDraggable(false)}
 			>

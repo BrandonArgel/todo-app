@@ -21,7 +21,8 @@ export const ConfirmModal = ({ open, onClose, onConfirm }: Props) => {
 		}, 100);
 	}, [open]);
 
-	const onSubmit = () => {
+	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
 		onConfirm();
 	};
 
