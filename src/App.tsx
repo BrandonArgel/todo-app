@@ -1,10 +1,10 @@
 import * as React from "react";
 import { TodoCounter, TodoList, TodoMiddle } from "@components";
-import { ToDoContext } from "@context";
+import { useTodo } from "@context";
 import { TodoModel } from "@models";
 
 function App() {
-	const { theme, toggleTheme, todos, addTodo, updateTodos } = React.useContext(ToDoContext);
+	const { theme, toggleTheme, todos, addTodo, updateTodos } = useTodo();
 	const [search, setSearch] = React.useState("");
 	const completedTodos =
 		todos.length > 0 ? todos.filter((todo: TodoModel) => todo.completed).length : 0;

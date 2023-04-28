@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 import { useLocalStorage } from "@hooks";
 import { TodoModel } from "@models";
 
@@ -7,6 +7,7 @@ type theme = "light" | "dark";
 type ToDoState = {
 	todos: TodoModel[];
 	theme: theme;
+	todoIdDelete: string;
 };
 
 type ToDoActions =
@@ -15,7 +16,8 @@ type ToDoActions =
 	| "ADD_TODO"
 	| "REMOVE_TODO"
 	| "EDIT_TODO"
-	| "TOGGLE_THEME";
+	| "TOGGLE_THEME"
+	| "SET_TODO_ID_DELETE";
 
 type ToDoAction = {
 	type: ToDoActions;
@@ -25,14 +27,16 @@ type ToDoAction = {
 const initialState: ToDoState = {
 	todos: [],
 	theme: "dark",
+	todoIdDelete: "",
 };
 
 const ToDoMethods = {
 	updateTodos: (todos: TodoModel[]) => {},
 	addTodo: (todo: TodoModel) => {},
-	removeTodo: (id: string) => {},
+	removeTodo: () => {},
 	editTodo: (todo: TodoModel) => {},
 	toggleTheme: () => {},
+	setTodoIdDelete: (id: string) => {},
 };
 
 const ToDoReducer = (state: ToDoState, action: ToDoAction) => {
@@ -51,6 +55,8 @@ const ToDoReducer = (state: ToDoState, action: ToDoAction) => {
 			return { ...state, todos: payload };
 		case "TOGGLE_THEME":
 			return { ...state, theme: payload };
+		case "SET_TODO_ID_DELETE":
+			return { ...state, todoIdDelete: payload };
 		default:
 			return state;
 	}
@@ -63,7 +69,7 @@ const ToDoContext = createContext({
 
 const ToDoContextProvider = ({ children }: { children: React.ReactNode }) => {
 	const [state, dispatch] = useReducer(ToDoReducer, initialState);
-	const [theme, setTheme] = useLocalStorage("theme", "light");
+	const [theme, setTheme] = useLocalStorage("theme", "dark");
 	const [todos, setTodos] = useLocalStorage("todos", []);
 
 	const initialize = () => {
@@ -81,8 +87,8 @@ const ToDoContextProvider = ({ children }: { children: React.ReactNode }) => {
 		dispatch({ type: "ADD_TODO", payload: newTodos });
 	};
 
-	const removeTodo = (id: string) => {
-		const newTodos = todos.filter((todo: TodoModel) => todo.id !== id);
+	const removeTodo = () => {
+		const newTodos = todos.filter((todo: TodoModel) => todo.id !== state.todoIdDelete);
 		setTodos(newTodos);
 		dispatch({ type: "REMOVE_TODO", payload: newTodos });
 	};
@@ -99,6 +105,10 @@ const ToDoContextProvider = ({ children }: { children: React.ReactNode }) => {
 		dispatch({ type: "TOGGLE_THEME", payload: newTheme });
 	};
 
+	const setTodoIdDelete = (id: string) => {
+		dispatch({ type: "SET_TODO_ID_DELETE", payload: id });
+	};
+
 	useEffect(() => {
 		initialize();
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -110,6 +120,7 @@ const ToDoContextProvider = ({ children }: { children: React.ReactNode }) => {
 		removeTodo,
 		editTodo,
 		toggleTheme,
+		setTodoIdDelete,
 	};
 
 	return (
@@ -119,4 +130,14 @@ const ToDoContextProvider = ({ children }: { children: React.ReactNode }) => {
 	);
 };
 
-export { ToDoContext, ToDoContextProvider };
+const useTodo = () => {
+	const context = useContext(ToDoContext);
+
+	if (context === undefined) {
+		throw new Error("useFilters must be used within FiltersContext");
+	}
+
+	return context;
+};
+
+export { useTodo, ToDoContextProvider };

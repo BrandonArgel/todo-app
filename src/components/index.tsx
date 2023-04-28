@@ -1,4 +1,5 @@
 export { Checkbox } from "./Checkbox";
+export { ConfirmModal } from "./ConfirmModal";
 export { TodoAdd } from "./TodoAdd";
 export { TodoCounter } from "./TodoHeader";
 export { TodoItem } from "./TodoItem";

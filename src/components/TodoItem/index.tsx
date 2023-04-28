@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useState } from "react";
+import { useTodo } from "@context";
 import { Checkbox } from "@components";
-import { Delete, Edit } from "@assets/icons";
+import { Delete, Edit, Grabber } from "@assets/icons";
 import styles from "./TodoItem.module.scss";
 
 interface Props {
@@ -28,6 +29,9 @@ export const TodoItem: React.FC<Props> = ({
 	onDelete,
 	onEdit,
 }) => {
+	const { setTodoIdDelete } = useTodo();
+	const [draggable, setDraggable] = useState(false);
+
 	return (
 		<li
 			className={dragging ? `${styles.item} ${styles.current}` : styles.item}
@@ -35,7 +39,7 @@ export const TodoItem: React.FC<Props> = ({
 			onDragEnd={onDragEnd}
 			onDragOver={(e) => e.preventDefault()}
 			onDragStart={(e) => onDragStart(e, id)}
-			draggable
+			draggable={draggable}
 		>
 			<Checkbox checked={completed} onChange={() => onComplete(id)}>
 				{text}
@@ -52,12 +56,23 @@ export const TodoItem: React.FC<Props> = ({
 			<button
 				className={styles.item__delete}
 				type="button"
-				onClick={() => onDelete(id)}
+				onClick={() => setTodoIdDelete(id)}
 				aria-hidden={dragging ? "false" : "true"}
 				title={`Eliminar tarea: ${text}`}
 			>
 				<Delete />
 			</button>
+			<span
+				className={styles.item__grabber}
+				aria-hidden={dragging ? "false" : "true"}
+				title="Drag to reorder"
+				onMouseDown={() => setDraggable(true)}
+				onMouseLeave={() => setDraggable(false)}
+				onTouchStart={() => setDraggable(true)}
+				onTouchEnd={() => setDraggable(false)}
+			>
+				<Grabber />
+			</span>
 		</li>
 	);
 };

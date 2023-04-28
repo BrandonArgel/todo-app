@@ -1,81 +1,92 @@
 @use "@styles/variables.scss";
 
 .item {
-	align-items: center;
-	cursor: inherit !important;
-	display: grid;
-	gap: 1rem;
-	grid-template-columns: 1fr auto auto;
-	width: 100%;
+  align-items: center;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr repeat(3, auto);
+  padding: 2rem;
+  width: 100%;
+  transition: opacity 0.2s ease-in-out;
 
-	&.current {
-		opacity: 0.3;
-	}
+  &.current {
+    opacity: 0.3;
+  }
 
-	&:not(:last-child) {
-		border-bottom: 1px solid var(--stroke-color);
-	}
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--stroke-color);
+  }
 
-	& > button[type="button"] {
-		opacity: 0;
-		visibility: hidden;
-	}
+  &>button[type="button"] {
+    opacity: 0;
+    visibility: hidden;
+  }
 
-	&:hover button[type="button"],
-	&:focus-within button[type="button"] {
-		opacity: 1;
-		visibility: visible;
-	}
+  &:hover button[type="button"],
+  &:focus-within button[type="button"] {
+    opacity: 1;
+    visibility: visible;
+  }
 
-	&__edit {
-		background: none;
-		border: none;
-		cursor: pointer;
+  &__grabber {
+    cursor: grab;
 
-		svg {
-			fill: var(--primary-text);
-			height: 1.8rem;
-			transition: fill 0.2s ease-in-out;
-			will-change: fill;
-		}
+    svg {
+      fill: var(--primary-text);
+      height: 1.8rem;
+      transition: fill 0.2s ease-in-out;
+      will-change: fill;
+    }
+  }
 
-		&:hover,
-		&:focus {
-			outline: none;
+  &__edit {
+    background: none;
+    border: none;
+    cursor: pointer;
 
-			svg {
-				fill: var(--primary-color);
-			}
-		}
-	}
+    svg {
+      fill: var(--primary-text);
+      height: 1.8rem;
+      transition: fill 0.2s ease-in-out;
+      will-change: fill;
+    }
 
-	&__delete {
-		background: none;
-		border: none;
-		cursor: pointer;
-		margin-right: 2rem;
+    &:hover,
+    &:focus {
+      outline: none;
 
-		svg {
-			fill: var(--primary-text);
-			height: 1.8rem;
-			transition: fill 0.2s ease-in-out;
-			will-change: fill;
-		}
+      svg {
+        fill: var(--primary-color);
+      }
+    }
+  }
 
-		&:hover,
-		&:focus {
-			outline: none;
+  &__delete {
+    background: none;
+    border: none;
+    cursor: pointer;
 
-			svg {
-				fill: var(--error-color);
-			}
-		}
-	}
+    svg {
+      fill: var(--primary-text);
+      height: 1.8rem;
+      transition: fill 0.2s ease-in-out;
+      will-change: fill;
+    }
+
+    &:hover,
+    &:focus {
+      outline: none;
+
+      svg {
+        fill: var(--error-color);
+      }
+    }
+  }
 }
 
 @media (pointer: coarse) {
-	.item > button[type="button"] {
-		opacity: 1;
-		visibility: visible;
-	}
+  .item>button[type="button"] {
+    opacity: 1;
+    visibility: visible;
+  }
 }

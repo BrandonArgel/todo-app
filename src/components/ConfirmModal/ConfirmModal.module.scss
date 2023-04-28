@@ -55,53 +55,18 @@
     height: 100%;
     padding: 5rem 2rem 2rem;
 
-    &_label {
-      align-items: center;
-      color: var(--secondary-text);
-      display: flex;
-      font-size: variables.$fz-sm;
-      margin-bottom: 1rem;
-      width: 100%;
-
-      input {
-        background: none;
-        border: none;
-        border-bottom: 1px solid var(--secondary-text);
-        color: var(--secondary-text);
-        flex: 1;
-        margin-left: 1rem;
-        padding: 0.5rem 1rem;
-        outline: none;
-
-        &:focus {
-          border-bottom: 1px solid var(--primary-color);
-        }
-      }
-
-      &.error {
-        color: red;
-
-        input {
-          border-color: red;
-        }
-      }
+    h2 {
+      color: var(--primary-text);
+      font-size: variables.$fz-lg;
+      margin-bottom: 2rem;
+      text-align: center;
     }
 
-    &>label {
-      margin-bottom: 1rem;
-      padding: 0;
-    }
-
-    &_checkbox {
-      align-items: center;
+    p {
       color: var(--secondary-text);
-      display: flex;
-      flex-flow: row nowrap;
-      font-size: variables.$fz-sm;
-
-      div {
-        margin-left: 1rem;
-      }
+      font-size: variables.$fz-md;
+      margin-bottom: 2rem;
+      text-align: center;
     }
 
     &_buttons {
@@ -132,8 +97,8 @@
           transform: scale(0.95);
         }
 
-        &:not([type="submit"]):hover,
-        &:not([type="submit"]):focus {
+        &[type="submit"]:hover,
+        &[type="submit"]:focus {
           background-color: var(--error-color);
           color: black;
         }

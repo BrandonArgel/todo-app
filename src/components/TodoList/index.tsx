@@ -1,6 +1,6 @@
 import * as React from "react";
-import { TodoModal, TodoItem, TodoAdd } from "@components";
-import { ToDoContext } from "@context";
+import { ConfirmModal, TodoModal, TodoItem, TodoAdd } from "@components";
+import { useTodo } from "@context";
 import { TodoModel } from "@models";
 import styles from "./TodoList.module.scss";
 
@@ -14,13 +14,13 @@ interface Props {
 
 export const TodoList: React.FC<Props> = ({ search, todos, totalCount, setTodos, onAdd }) => {
 	const [dragging, setDragging] = React.useState(false);
-	const { removeTodo, editTodo } = React.useContext(ToDoContext);
+	const { removeTodo, editTodo, todoIdDelete, setTodoIdDelete } = useTodo();
 	const dragContainer = React.useRef<HTMLUListElement>(null);
 	const dragItem = React.useRef<any>(null);
 	const dragNode = React.useRef<HTMLLIElement>(
 		null
 	) as React.MutableRefObject<HTMLLIElement | null>;
-	const [open, setOpen] = React.useState(false);
+	const [openModal, setOpenModal] = React.useState(false);
 	const [todoEdit, setTodoEdit] = React.useState<TodoModel | null>(null);
 
 	const onComplete = (id: string) => {
@@ -78,7 +78,7 @@ export const TodoList: React.FC<Props> = ({ search, todos, totalCount, setTodos,
 		const todo = todos.find((todo) => todo.id === id);
 		setTodoEdit(todo as TodoModel);
 		if (todo) {
-			setOpen(true);
+			setOpenModal(true);
 		}
 	};
 
@@ -112,8 +112,8 @@ export const TodoList: React.FC<Props> = ({ search, todos, totalCount, setTodos,
 				)}
 			</ul>
 			<TodoModal
-				open={open}
-				onClose={() => setOpen(false)}
+				open={openModal}
+				onClose={() => setOpenModal(false)}
 				todo={todoEdit}
 				onEdit={(todo) => {
 					const newTodos = todos.map((t) => {
@@ -123,9 +123,17 @@ export const TodoList: React.FC<Props> = ({ search, todos, totalCount, setTodos,
 						return t;
 					});
 					setTodos([...newTodos]);
-					setOpen(false);
+					setOpenModal(false);
 				}}
 				edit
+			/>
+			<ConfirmModal
+				open={Boolean(todoIdDelete)}
+				onClose={() => setTodoIdDelete("")}
+				onConfirm={() => {
+					removeTodo();
+					setTodoIdDelete("");
+				}}
 			/>
 		</>
 	);

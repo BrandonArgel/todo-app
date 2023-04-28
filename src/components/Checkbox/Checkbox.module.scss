@@ -4,7 +4,6 @@ $checkbox-gradient: linear-gradient(135deg, var(--primary-color) 13%, var(--seco
 
 .checkbox {
   cursor: inherit;
-  padding: 2rem;
   position: relative;
 
   input {
@@ -14,12 +13,12 @@ $checkbox-gradient: linear-gradient(135deg, var(--primary-color) 13%, var(--seco
     width: 0;
   }
 
-  input:checked ~ &_checkmark {
+  input:checked~&_checkmark {
     background: $checkbox-gradient;
     border: none;
   }
 
-  input:checked ~ &_checkmark::after {
+  input:checked~&_checkmark::after {
     display: block;
   }
 
@@ -29,7 +28,6 @@ $checkbox-gradient: linear-gradient(135deg, var(--primary-color) 13%, var(--seco
     border-radius: 50%;
     cursor: pointer;
     height: 2rem;
-    left: 2rem;
     position: absolute;
     transform: translateY(-50%);
     top: 50%;
@@ -59,7 +57,7 @@ $checkbox-gradient: linear-gradient(135deg, var(--primary-color) 13%, var(--seco
     word-break: break-word;
   }
 
-  input:checked ~ p {
+  input:checked~p {
     text-decoration: line-through;
   }
 
@@ -68,7 +66,7 @@ $checkbox-gradient: linear-gradient(135deg, var(--primary-color) 13%, var(--seco
   &:focus-within {
     outline: none;
 
-    input:not(:checked) ~ &_checkmark {
+    input:not(:checked)~&_checkmark {
       border-color: transparent;
       background-image: linear-gradient(var(--secondary-bg), var(--secondary-bg)),
         $checkbox-gradient;
