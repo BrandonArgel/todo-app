@@ -40,7 +40,7 @@ export const ConfirmModal = ({ open, onClose, onConfirm }: Props) => {
 				tabIndex={0}
 			>
 				<form className={styles.modal__form} onSubmit={onSubmit}>
-					<h2>Are you sure you want to delete the following task?</h2>
+					<h2>¿Quieres eliminar esta tarea?</h2>
 					<p>{todos.find((todo) => todo.id === todoIdDelete)?.text}</p>
 					<div className={styles.modal__form_buttons}>
 						<button type="button" onClick={() => onClose()}>
