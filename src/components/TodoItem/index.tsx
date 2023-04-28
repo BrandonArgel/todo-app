@@ -27,9 +27,12 @@ export const TodoItem: React.FC<Props> = ({
 	onComplete,
 	onEdit,
 }) => {
+	const isTouch = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+		navigator.userAgent
+	);
 	const itemRef = useRef<HTMLLIElement>(null);
 	const { setTodoIdDelete } = useTodo();
-	const [draggable, setDraggable] = useState(false);
+	const [draggable, setDraggable] = useState(isTouch ? true : false);
 
 	return (
 		<li
@@ -66,8 +69,6 @@ export const TodoItem: React.FC<Props> = ({
 				title="Drag to reorder"
 				onMouseDown={() => setDraggable(true)}
 				onMouseUp={() => setDraggable(false)}
-				onTouchStart={() => setDraggable(true)}
-				onTouchEnd={() => setDraggable(false)}
 			>
 				<Grabber />
 			</span>
