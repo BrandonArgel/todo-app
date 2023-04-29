@@ -33,21 +33,26 @@ export const TodoList: React.FC<Props> = ({ search, todos, totalCount, setTodos,
 		}
 	};
 
-	const handleDragStart = (node: HTMLLIElement, id: string) => {
+	const handleDragStart = (e: React.DragEvent<HTMLLIElement>, id: string) => {
+		e.dataTransfer.setData("text", id);
+		e.dataTransfer.effectAllowed = "move";
+
 		setDragging(true);
 		const { current: dragContainerCurrent } = dragContainer;
 		if (dragContainerCurrent) {
 			dragContainerCurrent.style.cursor = "grabbing";
 		}
+		const target = e.target;
 		dragItem.current = id;
 
-		if (node) {
-			dragNode.current = node;
+		if (target) {
+			dragNode.current = e.target as HTMLLIElement;
 		}
 	};
 
 	const handleDragEnter = (e: React.DragEvent<HTMLLIElement>, id: string) => {
 		e.preventDefault();
+		e.dataTransfer.dropEffect = "move";
 		const { current: dragItemCurrent } = dragItem;
 		const { current: dragNodeCurrent } = dragNode;
 		if (dragNodeCurrent && dragItemCurrent !== id) {

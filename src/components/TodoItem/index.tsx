@@ -8,7 +8,7 @@ interface Props {
 	completed: boolean;
 	dragging: boolean;
 	id: string;
-	onDragStart: (node: HTMLLIElement, id: string) => void;
+	onDragStart: (e: React.DragEvent<HTMLLIElement>, id: string) => void;
 	onDragEnter: (e: React.DragEvent<HTMLLIElement>, id: string) => void;
 	onDragEnd: () => void;
 	text: string;
@@ -27,21 +27,16 @@ export const TodoItem: React.FC<Props> = ({
 	onComplete,
 	onEdit,
 }) => {
-	const isTouch = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-		navigator.userAgent
-	);
-	const itemRef = useRef<HTMLLIElement>(null);
 	const { setTodoIdDelete } = useTodo();
-	const [draggable, setDraggable] = useState(isTouch ? true : false);
+	const [draggable, setDraggable] = useState(false);
 
 	return (
 		<li
-			ref={itemRef}
 			className={dragging ? `${styles.item} ${styles.current}` : styles.item}
 			onDragEnter={onDragEnter ? (e) => onDragEnter(e, id) : undefined}
 			onDragEnd={onDragEnd}
 			onDragOver={(e) => e.preventDefault()}
-			onDragStart={(e) => onDragStart(itemRef.current!, id)}
+			onDragStart={(e) => onDragStart(e, id)}
 			draggable={draggable}
 		>
 			<Checkbox checked={completed} onChange={() => onComplete(id)}>
@@ -69,6 +64,8 @@ export const TodoItem: React.FC<Props> = ({
 				title="Drag to reorder"
 				onMouseDown={() => setDraggable(true)}
 				onMouseUp={() => setDraggable(false)}
+				onTouchStart={() => setDraggable(true)}
+				onTouchEnd={() => setDraggable(false)}
 			>
 				<Grabber />
 			</span>
