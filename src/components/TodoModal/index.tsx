@@ -117,7 +117,7 @@ export const TodoModal = ({ open, onClose, onAdd, onEdit, edit = false, todo }: 
 					</label>
 					<div className={styles.modal__form_buttons}>
 						<button type="button" onClick={() => onClose()}>
-							Cancel
+							Cancelar
 						</button>
 						<button type="submit">{status}</button>
 					</div>
