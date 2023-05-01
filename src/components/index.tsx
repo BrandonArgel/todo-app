@@ -1,9 +1,9 @@
 export { Checkbox } from "./Checkbox";
 export { ConfirmModal } from "./ConfirmModal";
 export { TodoAdd } from "./TodoAdd";
-export { TodoCounter } from "./TodoHeader";
+export { TodoCounter } from "./TodoCounter";
 export { TodoItem } from "./TodoItem";
-export { TodoList } from "./TodoList";
+export { TodoList } from "./sections/TodoList";
 export { TodoMiddle } from "./sections/TodoMiddle";
 export { TodoModal } from "./TodoModal";
 export { TodoSearch } from "./TodoSearch";

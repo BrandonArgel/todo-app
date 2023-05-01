@@ -5,19 +5,22 @@ import { TodoModel } from "@models";
 type theme = "light" | "dark";
 
 type ToDoState = {
+	search: string;
 	todos: TodoModel[];
 	theme: theme;
 	todoIdDelete: string;
+	setLocalStorageTodos: (todos: TodoModel[]) => void;
 };
 
 type ToDoActions =
-	| "INITIALIZE"
-	| "UPDATE_TODOS"
 	| "ADD_TODO"
-	| "REMOVE_TODO"
 	| "EDIT_TODO"
+	| "INITIALIZE"
+	| "REMOVE_TODO"
+	| "SET_SEARCH"
+	| "SET_TODO_ID_DELETE"
 	| "TOGGLE_THEME"
-	| "SET_TODO_ID_DELETE";
+	| "UPDATE_TODOS";
 
 type ToDoAction = {
 	type: ToDoActions;
@@ -25,9 +28,11 @@ type ToDoAction = {
 };
 
 const initialState: ToDoState = {
+	search: "",
 	todos: [],
 	theme: "dark",
 	todoIdDelete: "",
+	setLocalStorageTodos: () => {},
 };
 
 const ToDoMethods = {
@@ -37,6 +42,7 @@ const ToDoMethods = {
 	editTodo: (todo: TodoModel) => {},
 	toggleTheme: () => {},
 	setTodoIdDelete: (id: string) => {},
+	setSearch: (search: string) => {},
 };
 
 const ToDoReducer = (state: ToDoState, action: ToDoAction) => {
@@ -46,13 +52,27 @@ const ToDoReducer = (state: ToDoState, action: ToDoAction) => {
 		case "INITIALIZE":
 			return { ...state, ...payload };
 		case "UPDATE_TODOS":
+			state.setLocalStorageTodos(payload);
 			return { ...state, todos: payload };
 		case "ADD_TODO":
-			return { ...state, todos: payload };
+			const newAddTodos = [...state.todos, payload];
+			state.setLocalStorageTodos(newAddTodos);
+			return { ...state, todos: newAddTodos };
 		case "REMOVE_TODO":
-			return { ...state, todos: payload };
+			const newRemoveTodos = state.todos.filter(
+				(todo: TodoModel) => todo.id !== state.todoIdDelete
+			);
+			state.setLocalStorageTodos(newRemoveTodos);
+			return { ...state, todos: newRemoveTodos };
 		case "EDIT_TODO":
-			return { ...state, todos: payload };
+			const newEditTodos = state.todos.map((todo: TodoModel) => {
+				if (todo.id === payload.id) {
+					return payload;
+				}
+				return todo;
+			});
+			state.setLocalStorageTodos(newEditTodos);
+			return { ...state, todos: newEditTodos };
 		case "TOGGLE_THEME":
 			return { ...state, theme: payload };
 		case "SET_TODO_ID_DELETE":
@@ -68,35 +88,31 @@ const ToDoContext = createContext({
 });
 
 const ToDoContextProvider = ({ children }: { children: React.ReactNode }) => {
+	const [localStorageTodos, setLocalStorageTodos] = useLocalStorage("todos", []);
 	const [state, dispatch] = useReducer(ToDoReducer, initialState);
 	const [theme, setTheme] = useLocalStorage("theme", "dark");
-	const [todos, setTodos] = useLocalStorage("todos", []);
 
 	const initialize = () => {
-		dispatch({ type: "INITIALIZE", payload: { todos, theme } });
+		dispatch({
+			type: "INITIALIZE",
+			payload: { todos: localStorageTodos, setLocalStorageTodos, theme },
+		});
 	};
 
-	const updateTodos = (todos: TodoModel[]) => {
-		setTodos(todos);
-		dispatch({ type: "UPDATE_TODOS", payload: todos });
+	const updateTodos = (newTodos: TodoModel[]) => {
+		dispatch({ type: "UPDATE_TODOS", payload: newTodos });
 	};
 
 	const addTodo = (todo: TodoModel) => {
-		const newTodos = [...todos, todo];
-		setTodos(newTodos);
-		dispatch({ type: "ADD_TODO", payload: newTodos });
+		dispatch({ type: "ADD_TODO", payload: todo });
 	};
 
 	const removeTodo = () => {
-		const newTodos = todos.filter((todo: TodoModel) => todo.id !== state.todoIdDelete);
-		setTodos(newTodos);
-		dispatch({ type: "REMOVE_TODO", payload: newTodos });
+		dispatch({ type: "REMOVE_TODO", payload: null });
 	};
 
 	const editTodo = (todo: TodoModel) => {
-		const newTodos = todos.map((t: TodoModel) => (t.id === todo.id ? todo : t));
-		setTodos(newTodos);
-		dispatch({ type: "EDIT_TODO", payload: newTodos });
+		dispatch({ type: "EDIT_TODO", payload: todo });
 	};
 
 	const toggleTheme = () => {
@@ -109,8 +125,25 @@ const ToDoContextProvider = ({ children }: { children: React.ReactNode }) => {
 		dispatch({ type: "SET_TODO_ID_DELETE", payload: id });
 	};
 
+	const setSearch = (search: string) => {
+		dispatch({ type: "SET_SEARCH", payload: search });
+	};
+
 	useEffect(() => {
 		initialize();
+
+		const onChange = (change: StorageEvent) => {
+			if (change.key === "todos") {
+				const newTodos = JSON.parse(change.newValue || "[]");
+				dispatch({ type: "UPDATE_TODOS", payload: newTodos });
+			}
+		};
+
+		window.addEventListener("storage", onChange);
+
+		return () => {
+			window.removeEventListener("storage", onChange);
+		};
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const value = {
@@ -121,6 +154,10 @@ const ToDoContextProvider = ({ children }: { children: React.ReactNode }) => {
 		editTodo,
 		toggleTheme,
 		setTodoIdDelete,
+		setSearch,
+		todos: state.todos.filter((todo: TodoModel) =>
+			todo.text.toLowerCase().includes(state.search.toLowerCase())
+		),
 	};
 
 	return (
