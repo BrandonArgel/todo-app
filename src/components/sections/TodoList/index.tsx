@@ -18,6 +18,9 @@ export const TodoList: React.FC<Props> = ({ totalCount, onAdd }) => {
 	const [dragging, setDragging] = React.useState(false);
 	const [openModal, setOpenModal] = React.useState(false);
 	const dragID = React.useRef<string | null>(null);
+	const listContainer = React.useRef<HTMLUListElement>(
+		null
+	) as React.MutableRefObject<HTMLUListElement | null>;
 	const dragNode = React.useRef<HTMLLIElement>(
 		null
 	) as React.MutableRefObject<HTMLLIElement | null>;
@@ -61,19 +64,21 @@ export const TodoList: React.FC<Props> = ({ totalCount, onAdd }) => {
 			targetDragNode.current = e.target as HTMLLIElement;
 
 			swapItems();
+			reorderList();
 		}
 	};
 
-	const toggleSwapping = () => {
+	const onTransitionEnd = () => {
 		isSwapping = !isSwapping;
 
 		const { current: dragNodeCurrent } = dragNode;
 
 		if (!dragNodeCurrent) return;
 
-		dragNodeCurrent.removeEventListener("transitionend", toggleSwapping);
+		dragNodeCurrent.removeEventListener("transitionend", onTransitionEnd);
 	};
 
+	// TODO: Fix swapping items jumping one position out of the container
 	const swapItems = (): void => {
 		isSwapping = true;
 
@@ -85,43 +90,36 @@ export const TodoList: React.FC<Props> = ({ totalCount, onAdd }) => {
 		const currentTranslate = targetDragNodeCurrent.style.transform.match(/-?\d+/g)?.[0] ?? 0;
 		const targetTranslate = dragNodeCurrent.style.transform.match(/-?\d+/g)?.[0] ?? 0;
 
-		dragNodeCurrent.addEventListener("transitionend", toggleSwapping);
+		dragNodeCurrent.addEventListener("transitionend", onTransitionEnd);
 
-		console.log({
-			currentOffsetTop: dragNodeCurrent.getBoundingClientRect().top,
-			targetOffsetTop: targetDragNodeCurrent.getBoundingClientRect().top,
-		});
-		if (
-			dragNodeCurrent.getBoundingClientRect().top >
-			targetDragNodeCurrent.getBoundingClientRect().top
-		) {
+		const topDragNode = dragNodeCurrent.getBoundingClientRect().top;
+		const topTargetDragNode = targetDragNodeCurrent.getBoundingClientRect().top;
+
+		if (topDragNode > topTargetDragNode) {
 			targetDragNodeCurrent.style.transform = `translateY(${Number(currentTranslate) + 100}%)`;
 			dragNodeCurrent.style.transform = `translateY(${Number(targetTranslate) - 100}%)`;
 		} else {
 			targetDragNodeCurrent.style.transform = `translateY(${Number(currentTranslate) - 100}%)`;
 			dragNodeCurrent.style.transform = `translateY(${Number(targetTranslate) + 100}%)`;
 		}
-
-		reorderList();
 	};
 
 	const resetSwapItems = (): void => {
-		const { current: dragNodeCurrent } = dragNode;
-		const { current: targetDragNodeCurrent } = targetDragNode;
+		const { current: listContainerCurrent } = listContainer;
 
-		if (!dragNodeCurrent || !targetDragNodeCurrent) return;
+		if (!listContainerCurrent) return;
+		// Array of all the list items inside the container
+		const listItems = Array.from(listContainerCurrent.children) as HTMLLIElement[];
 
-		dragNodeCurrent.style.transition = "none";
-		targetDragNodeCurrent.style.transition = "none";
-		dragNodeCurrent.style.transform = "translateY(0%)";
-		targetDragNodeCurrent.style.transform = "translateY(0%)";
+		listItems.forEach((item) => {
+			item.style.transition = "none";
+			item.style.transform = "translateY(0)";
 
-		setTimeout(() => {
-			dragNodeCurrent.style.transition = "";
-			targetDragNodeCurrent.style.transition = "";
-		}, 0);
+			setTimeout(() => {
+				item.style.transition = "";
+			}, 100);
+		});
 
-		isSwapping = false;
 		updateTodos(_todos);
 		resetRefs();
 	};
@@ -130,15 +128,12 @@ export const TodoList: React.FC<Props> = ({ totalCount, onAdd }) => {
 		const { current: dragIDCurrent } = dragID;
 		const { current: targetDragIdCurrent } = targetDragId;
 
-		const draggedTodo = todos.find((todo) => todo.id === dragIDCurrent);
-		const draggedIndex = todos.findIndex((todo) => todo.id === dragIDCurrent);
-		const todoIndex = todos.findIndex((todo) => todo.id === targetDragIdCurrent);
+		if (!dragIDCurrent || !targetDragIdCurrent) return;
 
-		if (draggedTodo) {
-			_todos.splice(draggedIndex, 1);
-			_todos.splice(todoIndex, 0, draggedTodo);
-			console.log("new todos", _todos);
-		}
+		const dragIndex = _todos.findIndex((todo) => todo.id === dragIDCurrent);
+		const targetIndex = _todos.findIndex((todo) => todo.id === targetDragIdCurrent);
+
+		_todos.splice(targetIndex, 0, _todos.splice(dragIndex, 1)[0]);
 	};
 
 	const handleDragEnd = () => {
@@ -167,7 +162,7 @@ export const TodoList: React.FC<Props> = ({ totalCount, onAdd }) => {
 
 	return (
 		<>
-			<ul className={styles.list}>
+			<ul className={styles.list} ref={listContainer}>
 				{todos.length > 0 ? (
 					todos.map(({ completed, text, id }) => (
 						<TodoItem
