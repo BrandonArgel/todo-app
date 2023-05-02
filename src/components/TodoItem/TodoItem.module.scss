@@ -7,7 +7,7 @@
   grid-template-columns: 1fr repeat(3, auto);
   padding: 2rem;
   width: 100%;
-  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out, transform 0.1s ease-in-out;
 
   &.current {
     opacity: 0.3;
