@@ -9,22 +9,23 @@ interface Props {
 	onAdd: (todo: TodoModel) => void;
 }
 
+let isSwapping = false;
+
 export const TodoList: React.FC<Props> = ({ totalCount, onAdd }) => {
 	const { todos, search, removeTodo, editTodo, todoIdDelete, setTodoIdDelete, updateTodos } =
 		useTodo();
-	console.log("render", todos);
+	const [todoEdit, setTodoEdit] = React.useState<TodoModel | null>(null);
 	const [dragging, setDragging] = React.useState(false);
+	const [openModal, setOpenModal] = React.useState(false);
 	const dragID = React.useRef<string | null>(null);
 	const dragNode = React.useRef<HTMLLIElement>(
 		null
 	) as React.MutableRefObject<HTMLLIElement | null>;
-	const targetDragId = React.useRef<string | null>(null);
 	const targetDragNode = React.useRef<HTMLLIElement>(
 		null
 	) as React.MutableRefObject<HTMLLIElement | null>;
-	const [openModal, setOpenModal] = React.useState(false);
-	const [todoEdit, setTodoEdit] = React.useState<TodoModel | null>(null);
-	let isSwapping = false;
+	const targetDragId = React.useRef<string | null>(null);
+	const _todos = [...todos];
 
 	const onComplete = (id: string) => {
 		const todo = todos.find((todo) => todo.id === id);
@@ -59,9 +60,18 @@ export const TodoList: React.FC<Props> = ({ totalCount, onAdd }) => {
 			targetDragId.current = id;
 			targetDragNode.current = e.target as HTMLLIElement;
 
-			dragNodeCurrent.addEventListener("transitionend", resetSwapItems);
 			swapItems();
 		}
+	};
+
+	const toggleSwapping = () => {
+		isSwapping = !isSwapping;
+
+		const { current: dragNodeCurrent } = dragNode;
+
+		if (!dragNodeCurrent) return;
+
+		dragNodeCurrent.removeEventListener("transitionend", toggleSwapping);
 	};
 
 	const swapItems = (): void => {
@@ -72,35 +82,47 @@ export const TodoList: React.FC<Props> = ({ totalCount, onAdd }) => {
 
 		if (!dragNodeCurrent || !targetDragNodeCurrent) return;
 
-		if (dragNodeCurrent.offsetTop > targetDragNodeCurrent.offsetTop) {
-			targetDragNodeCurrent.style.transform = "translateY(100%)";
-			dragNodeCurrent.style.transform = "translateY(-100%)";
+		const currentTranslate = targetDragNodeCurrent.style.transform.match(/-?\d+/g)?.[0] ?? 0;
+		const targetTranslate = dragNodeCurrent.style.transform.match(/-?\d+/g)?.[0] ?? 0;
+
+		dragNodeCurrent.addEventListener("transitionend", toggleSwapping);
+
+		console.log({
+			currentOffsetTop: dragNodeCurrent.getBoundingClientRect().top,
+			targetOffsetTop: targetDragNodeCurrent.getBoundingClientRect().top,
+		});
+		if (
+			dragNodeCurrent.getBoundingClientRect().top >
+			targetDragNodeCurrent.getBoundingClientRect().top
+		) {
+			targetDragNodeCurrent.style.transform = `translateY(${Number(currentTranslate) + 100}%)`;
+			dragNodeCurrent.style.transform = `translateY(${Number(targetTranslate) - 100}%)`;
 		} else {
-			targetDragNodeCurrent.style.transform = "translateY(-100%)";
-			dragNodeCurrent.style.transform = "translateY(100%)";
+			targetDragNodeCurrent.style.transform = `translateY(${Number(currentTranslate) - 100}%)`;
+			dragNodeCurrent.style.transform = `translateY(${Number(targetTranslate) + 100}%)`;
 		}
+
+		reorderList();
 	};
 
-	const resetSwapItems = (e: TransitionEvent): void => {
-		if (e.propertyName !== "transform") return;
+	const resetSwapItems = (): void => {
 		const { current: dragNodeCurrent } = dragNode;
 		const { current: targetDragNodeCurrent } = targetDragNode;
 
 		if (!dragNodeCurrent || !targetDragNodeCurrent) return;
-		reorderList();
 
 		dragNodeCurrent.style.transition = "none";
 		targetDragNodeCurrent.style.transition = "none";
-		dragNodeCurrent.style.transform = "translateY(0)";
-		targetDragNodeCurrent.style.transform = "translateY(0)";
+		dragNodeCurrent.style.transform = "translateY(0%)";
+		targetDragNodeCurrent.style.transform = "translateY(0%)";
 
 		setTimeout(() => {
 			dragNodeCurrent.style.transition = "";
 			targetDragNodeCurrent.style.transition = "";
 		}, 0);
 
-		dragNodeCurrent.removeEventListener("transitionend", reorderList);
 		isSwapping = false;
+		updateTodos(_todos);
 		resetRefs();
 	};
 
@@ -113,17 +135,15 @@ export const TodoList: React.FC<Props> = ({ totalCount, onAdd }) => {
 		const todoIndex = todos.findIndex((todo) => todo.id === targetDragIdCurrent);
 
 		if (draggedTodo) {
-			console.log("todos", todos);
-			const newTodos = [...todos];
-			newTodos.splice(draggedIndex, 1);
-			newTodos.splice(todoIndex, 0, draggedTodo);
-			updateTodos(newTodos);
-			console.log("new todos", newTodos);
+			_todos.splice(draggedIndex, 1);
+			_todos.splice(todoIndex, 0, draggedTodo);
+			console.log("new todos", _todos);
 		}
 	};
 
 	const handleDragEnd = () => {
 		setDragging(false);
+		resetSwapItems();
 
 		if (!isSwapping) {
 			resetRefs();
