@@ -4,10 +4,9 @@ import { useTodo } from "@context";
 import { TodoModel } from "@models";
 
 function App() {
-	const { theme, toggleTheme, todos, addTodo } = useTodo();
+	const { totalTodos, theme, toggleTheme, todos, addTodo } = useTodo();
 	const completedTodos =
 		todos.length > 0 ? todos.filter((todo: TodoModel) => todo.completed).length : 0;
-	const totalTodos = todos.length;
 
 	return (
 		<>
